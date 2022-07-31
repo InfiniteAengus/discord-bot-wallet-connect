@@ -19,5 +19,8 @@
   "homepage": "https://github.com/Cryptonite-Group-Inc/hunny-discord-bot#readme",
   "dependencies": {
     "discord.js": "^14.1.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.20.0"
   }
 }
