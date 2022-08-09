@@ -1,5 +1,6 @@
 {
-    "token": "MTAwMzQzMTQ3NDYxNzM5NzI0OA.GJ-gG-.dXQv1qHSY0KxL4xNKsBMnA_be9W53wOUlH1oeg",
-    "clientId": "1003431474617397248",
-    "guildId": "892863900352135248"
+  "clientId": "1006255688319762593",
+  "guildId": "834446714895204422",
+  "token": "MTAwNjI1NTY4ODMxOTc2MjU5Mw.GOiKr3.HOleAWd6VGhydcvIOSOBdoqzWtiWrhNHteUdqo",
+  "apiUrl": "https://htyeme5kba.execute-api.us-east-1.amazonaws.com/prod"
 }

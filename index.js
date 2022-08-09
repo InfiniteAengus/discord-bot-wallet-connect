@@ -22,7 +22,18 @@ client.once('ready', () => {
 
 
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
+    if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
+
+    const collector = interaction.channel.createMessageComponentCollector();
+
+    collector.on('collect', async i => {
+        if (i.customId === 'yes') {
+            //
+        }
+        else if (i.customId === 'no') {
+            await i.update({ content: 'Tip has been cancelled', components: [] });
+        }
+    });
 
     const command = client.commands.get(interaction.commandName);
 
@@ -30,9 +41,10 @@ client.on('interactionCreate', async interaction => {
 
     try {
         await command.execute(interaction);
-    } catch (error) {
+    }
+    catch (error) {
         console.log(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true});
+        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
 });
 
