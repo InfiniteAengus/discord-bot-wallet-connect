@@ -9,10 +9,10 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('tip')
     .addUserOption((user) =>
-      user.setName('user').setDescription('@user').setRequired(true)
+      user.setName('user').setDescription('@user').setRequired(true),
     )
     .addNumberOption((amount) =>
-      amount.setName('amount').setDescription('amount').setRequired(true)
+      amount.setName('amount').setDescription('amount').setRequired(true),
     )
     .setDescription('Tip token to users'),
   async execute(interaction) {
@@ -27,7 +27,7 @@ module.exports = {
       new ButtonBuilder()
         .setCustomId('no')
         .setLabel('No')
-        .setStyle(ButtonStyle.Danger)
+        .setStyle(ButtonStyle.Danger),
     );
     await interaction.reply({
       content: `Are you sure to send ${amount} to ${user}?`,

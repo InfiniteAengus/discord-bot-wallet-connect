@@ -2,5 +2,6 @@
   "clientId": "1006255688319762593",
   "guildId": "834446714895204422",
   "token": "MTAwNjI1NTY4ODMxOTc2MjU5Mw.GOiKr3.HOleAWd6VGhydcvIOSOBdoqzWtiWrhNHteUdqo",
-  "apiUrl": "https://htyeme5kba.execute-api.us-east-1.amazonaws.com/prod"
+  "apiUrl": "https://htyeme5kba.execute-api.us-east-1.amazonaws.com/prod",
+  "apiToken": "8f5a202d-3cde-455d-8ac8-f306788c14f1"
 }

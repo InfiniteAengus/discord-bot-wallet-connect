@@ -20,6 +20,7 @@
   "homepage": "https://github.com/Cryptonite-Group-Inc/hunny-discord-bot#readme",
   "dependencies": {
     "@discordjs/rest": "^1.0.1",
+    "crypto-js": "^4.1.1",
     "discord.js": "^14.1.2",
     "node-fetch": "^1.7.3",
     "web3": "^1.7.5"
