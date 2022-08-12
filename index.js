@@ -7,6 +7,7 @@ const {
   GatewayIntentBits,
   EmbedBuilder,
 } = require('discord.js');
+const fetch = require('node-fetch');
 const { allowedUsers } = require('./config.json');
 const { getWalletFromDiscordUser } = require('./helper');
 require('dotenv').config({ debug: process.env.DEBUG });
