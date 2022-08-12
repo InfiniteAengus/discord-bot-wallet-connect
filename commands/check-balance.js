@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
+const { getWalletFromDiscordUser } = require('../helper');
 require('dotenv').config({ debug: process.env.DEBUG });
 
 module.exports = {
@@ -7,14 +8,9 @@ module.exports = {
     .setName('check-my-balance')
     .setDescription('Check balance'),
   async execute(interaction) {
-    const wRes = await fetch(
-      `${
-        process.env.BACKEND_API_URL
-      }/getWalletByDiscord?discord=${encodeURIComponent(interaction.user.tag)}`,
-    );
-    const wallet = await wRes.json();
+    const wallet = await getWalletFromDiscordUser(interaction.user.tag, interaction);
 
-    if (!wallet.length) {
+    if (!wallet) {
       const embed = new EmbedBuilder()
         .setColor(0xff9900)
         .setTitle('💎 Please connect your wallet first 💎')
@@ -33,13 +29,13 @@ module.exports = {
     }
 
     const res = await fetch(
-      `${process.env.BACKEND_API_URL}/getBalanceByWallet?ownerAddress=${wallet[0].wallet}`,
+      `${process.env.BACKEND_API_URL}/getBalanceByWallet?ownerAddress=${wallet}`,
       {
         method: 'GET',
         headers: {
           Authorization: '8f5a202d-3cde-455d-8ac8-f306788c14f1',
         },
-      }
+      },
     );
     const data = await res.json();
 

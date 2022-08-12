@@ -13,7 +13,6 @@ module.exports = {
     .setName('connect')
     .setDescription('Connect wallet'),
   async execute(interaction) {
-    console.log(interaction);
     const ciphertext = CryptoJS.AES.encrypt(interaction.user.tag, process.env.BACKEND_API_TOKEN).toString();
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
