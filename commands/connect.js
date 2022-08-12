@@ -5,7 +5,7 @@ const {
   ButtonStyle,
 } = require('discord.js');
 const CryptoJS = require('crypto-js');
-const { apiToken } = require('../config.json');
+require('dotenv').config({ debug: process.env.DEBUG });
 // const Web3 = require('web3');
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
     .setName('connect')
     .setDescription('Connect wallet'),
   async execute(interaction) {
-    const ciphertext = CryptoJS.AES.encrypt(interaction.user.tag, apiToken).toString();
+    const ciphertext = CryptoJS.AES.encrypt(interaction.user.tag, process.env.BACKEND_API_TOKEN).toString();
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setLabel('Connect Wallet')
