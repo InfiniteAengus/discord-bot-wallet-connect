@@ -5,15 +5,15 @@ require('dotenv').config({ debug: process.env.DEBUG });
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('check-my-balance')
-    .setDescription('Check balance'),
+    .setName('balance')
+    .setDescription('Check HUNNY balance'),
   async execute(interaction) {
     const wallet = await getWalletFromDiscordUser(interaction.user.tag, interaction);
 
     if (!wallet) {
       const embed = new EmbedBuilder()
         .setColor(0xff9900)
-        .setTitle('💎 Please connect your wallet first 💎')
+        .setTitle('Please connect your wallet first')
         .setTimestamp()
         .setFooter({
           text: 'Powered by Bad Bears x BeeFrens',
@@ -41,8 +41,8 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x0099ff)
-      .setTitle('💎 Check Your Balance 💎')
-      .addFields({ name: 'Balance', value: `${data[0].hunnyBalance}` })
+      .setTitle('🍯 HUNNY Balance')
+      .addFields({ name: 'Balance', value: `You have **${data[0].hunnyBalance}** HUNNY available` })
       .setTimestamp()
       .setFooter({
         text: 'Powered by Bad Bears x BeeFrens',

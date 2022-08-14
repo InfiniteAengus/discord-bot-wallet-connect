@@ -136,7 +136,8 @@ channel.subscribe('wallet', function (message) {
 
   const embed = new EmbedBuilder()
     .setColor(0x0099ff)
-    .setTitle(`💎 ${parsedData.discord} successfully connect wallet 💎`)
+    .setTitle('✨ Successfully connected wallet')
+    .addFields({ name: 'User', value: `${parsedData.discord}` })
     .addFields({ name: 'Wallet', value: `${parsedData.wallet}` })
     .setTimestamp()
     .setFooter({
