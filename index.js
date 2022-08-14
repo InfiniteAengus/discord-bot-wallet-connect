@@ -65,7 +65,20 @@ client.on('interactionCreate', async (interaction) => {
   const collector = interaction.channel.createMessageComponentCollector();
 
   collector.on('collect', async (i) => {
-    if (i.customId === 'yes') {
+    if (i.customId === 'tip' || i.customId === 'connect' || i.customId === 'check-my-balance') {
+      const command = client.commands.get(i.customId);
+      if (!command) return;
+
+      try {
+        await command.execute(i);
+      } catch (error) {
+        console.log(error);
+        await i.reply({
+          content: 'There was an error while executing this command!',
+          ephemeral: true,
+        });
+      }
+    } else if (i.customId === 'yes') {
       const userId = getUserNameFromMessage(i.message.content);
       const user = client.users.cache.find((u) => u.id === userId);
       const userTag = user.username + '#' + user.discriminator;
@@ -78,10 +91,10 @@ client.on('interactionCreate', async (interaction) => {
       const res = await fetch(`${process.env.BACKEND_API_TOKEN}/transfer`, {
         method: 'POST',
         body: {
-            senderWallet: senderWallet,
-            receiverWallet: receiverWallet,
-            amount: amount,
-            token: hashToken,
+          senderWallet: senderWallet,
+          receiverWallet: receiverWallet,
+          amount: amount,
+          token: hashToken,
         },
       });
 

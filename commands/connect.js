@@ -18,7 +18,7 @@ module.exports = {
       new ButtonBuilder()
         .setLabel('Connect Wallet')
         .setStyle(ButtonStyle.Link)
-        .setURL(`https://app.badbears.io/connect?name=${encodeURIComponent(interaction.user.tag)}&token=${encodeURIComponent(ciphertext)}`),
+        .setURL(`${process.env.DAPP_URL}/connect?name=${encodeURIComponent(interaction.user.tag)}&token=${encodeURIComponent(ciphertext)}`),
     );
 
     await interaction.reply({
