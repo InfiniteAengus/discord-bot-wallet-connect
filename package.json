@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "node deploy-commands.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,7 @@
     "discord.js": "^14.1.2",
     "dotenv": "^16.0.1",
     "node-fetch": "^1.7.3",
+    "nodemon": "^2.0.19",
     "web3": "^1.7.5"
   },
   "devDependencies": {

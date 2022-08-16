@@ -63,11 +63,11 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId('yes')
+        .setCustomId('tip-yes')
         .setLabel('Yes')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
-        .setCustomId('no')
+        .setCustomId('tip-no')
         .setLabel('No')
         .setStyle(ButtonStyle.Danger),
     );

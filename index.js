@@ -9,36 +9,13 @@ const {
 } = require('discord.js');
 const fetch = require('node-fetch');
 const { allowedUsers } = require('./config.json');
-const { getWalletFromDiscordUser } = require('./helper');
+const {
+  getWalletFromDiscordUser,
+  getUserNameFromMessage,
+  getAmountFromMessage,
+  hashCode,
+} = require('./helper');
 require('dotenv').config({ debug: process.env.DEBUG });
-
-const getUserNameFromMessage = (message) => {
-  let i = message.length - 1;
-  for (; i >= 0; i--) {
-    if (message[i] === '<') break;
-  }
-
-  return message.slice(i + 2, message.length - 2);
-};
-
-const getAmountFromMessage = (message) => {
-  let i = 21;
-  for (; message[i] !== ' '; i++);
-  return message.slice(21, i);
-};
-
-const hashCode = (str) => {
-  let hash = 0,
-    i,
-    chr;
-  if (str.length === 0) return hash;
-  for (i = 0; i < str.length; i++) {
-    chr = str.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0;
-  }
-  return hash;
-};
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -65,7 +42,11 @@ client.on('interactionCreate', async (interaction) => {
   const collector = interaction.channel.createMessageComponentCollector();
 
   collector.on('collect', async (i) => {
-    if (i.customId === 'tip' || i.customId === 'connect' || i.customId === 'check-my-balance') {
+    if (
+      i.customId === 'tip' ||
+      i.customId === 'connect' ||
+      i.customId === 'balance'
+    ) {
       const command = client.commands.get(i.customId);
       if (!command) return;
 
@@ -78,7 +59,7 @@ client.on('interactionCreate', async (interaction) => {
           ephemeral: true,
         });
       }
-    } else if (i.customId === 'yes') {
+    } else if (i.customId === 'tip-yes') {
       const userId = getUserNameFromMessage(i.message.content);
       const user = client.users.cache.find((u) => u.id === userId);
       const userTag = user.username + '#' + user.discriminator;
@@ -86,24 +67,46 @@ client.on('interactionCreate', async (interaction) => {
 
       const senderWallet = await getWalletFromDiscordUser(interaction.user.tag);
       const receiverWallet = await getWalletFromDiscordUser(userTag);
-      const hashToken = hashCode(process.env.BACKEND_API_TOKEN + senderWallet);
+      const hashToken = hashCode(
+        `${process.env.HASH_TOKEN}${senderWallet.toLowerCase()}`
+      );
 
-      const res = await fetch(`${process.env.BACKEND_API_TOKEN}/transfer`, {
-        method: 'POST',
-        body: {
-          senderWallet: senderWallet,
-          receiverWallet: receiverWallet,
-          amount: amount,
-          token: hashToken,
-        },
-      });
+      const requestBody = {
+        sender: senderWallet.toLowerCase(),
+        receiver: receiverWallet.toLowerCase(),
+        amount: amount,
+        token: hashToken,
+      };
 
-      const data = await res.json();
+      try {
+        const res = await fetch(
+          `${process.env.BACKEND_API_URL}/tipHunnyDiscord`,
+          {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
 
-      await i.update({ content: data });
+        const data = await res.json();
+        if (data.error) {
+          await i.update({ content: data.error.message, components: [] });
+        } else {
+          await i.update({
+            content: 'Successfully transferred',
+            components: [],
+          });
+        }
+      } catch (e) {
+        console.log(e);
+        await i.update({ content: 'Cannot send hunny', components: [] });
+      }
+
       //  const user = i.message.interaction.options.getUser('user');
       //  console.log(user);
-    } else if (i.customId === 'no') {
+    } else if (i.customId === 'tip-no') {
       await i.update({ content: 'Tip has been cancelled', components: [] });
     }
   });

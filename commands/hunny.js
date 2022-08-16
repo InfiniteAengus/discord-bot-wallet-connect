@@ -19,7 +19,7 @@ module.exports = {
         .setLabel('Tip')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
-        .setCustomId('check-my-balance')
+        .setCustomId('balance')
         .setLabel('Check balance')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
