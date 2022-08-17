@@ -67,6 +67,24 @@ module.exports = {
       return;
     }
 
+    if (amount < 0) {
+      const embed = new EmbedBuilder()
+        .setColor(0xff9900)
+        .setTitle('🤔 The amount must be greater than 0.')
+        .setTimestamp()
+        .setFooter({
+          text: 'Powered by HUNNY',
+          iconURL:
+            'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
+        });
+
+      await interaction.editReply({
+        embeds: [embed],
+        ephemeral: true,
+      });
+      return;
+    }
+
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('tip-yes')
@@ -76,7 +94,7 @@ module.exports = {
       new ButtonBuilder()
         .setCustomId('tip-no')
         .setLabel('Cancel')
-        .setStyle(ButtonStyle.Secondary),
+        .setStyle(ButtonStyle.Secondary)
     );
     await interaction.editReply({
       content: `Ready to send <:hunny:1009530635150430228> **${amount} HUNNY** to ${user}?`,
