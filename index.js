@@ -35,7 +35,7 @@ for (const file of commandFiles) {
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
 
-  if (allowedUsers.findIndex((user) => user === interaction.user.id) === -1) {
+  if (allowedUsers.findIndex((user) => user.id === interaction.user.id) === -1) {
     return;
   }
 
