@@ -47,7 +47,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor(0xff9900)
         .setTitle('🤔 This person has not linked their wallet yet.')
-        .addFields('Tell them to link their wallet with **/connect**')
+        .setDescription('Tell them to link their wallet with **/connect**')
         .setTimestamp()
         .setFooter({
           text: 'Powered by HUNNY',
