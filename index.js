@@ -61,7 +61,7 @@ client.on('interactionCreate', async (interaction) => {
         });
       }
     } else if (i.customId === 'tip-yes') {
-      i.deferReply({ ephemeral: true });
+      await i.deferReply({ ephemeral: true });
 
       const userId = getUserNameFromMessage(i.message.content);
       const user = client.users.cache.find((u) => u.id === userId);
@@ -95,11 +95,16 @@ client.on('interactionCreate', async (interaction) => {
 
         const data = await res.json();
         if (data.error) {
-          await i.editReply({ content: data.error.message, components: [] });
+          await i.editReply({
+            content: data.error.message,
+            components: [],
+            ephemeral: true,
+          });
         } else {
           await i.editReply({
             content: 'Successfully transferred',
             components: [],
+            ephemeral: true,
           });
         }
       } catch (e) {
