@@ -26,9 +26,10 @@ module.exports = {
   },
 
   getAmountFromMessage(message) {
-    let i = 21;
-    for (; message[i] !== ' '; i++);
-    return Number(message.slice(21, i));
+    const start = message.indexOf('**');
+    let i;
+    for (i = start; message[i] !== ' '; i++);
+    return Number(message.slice(start + 2, i));
   },
 
   hashCode(str) {
@@ -38,7 +39,7 @@ module.exports = {
     if (str.length === 0) return hash;
     for (i = 0; i < str.length; i++) {
       chr = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + chr;
+      hash = (hash << 5) - hash + chr;
       hash |= 0;
     }
     return hash;
