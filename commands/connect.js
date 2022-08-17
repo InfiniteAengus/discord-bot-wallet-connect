@@ -17,6 +17,7 @@ module.exports = {
       interaction.user.tag,
       process.env.BACKEND_API_TOKEN
     ).toString();
+    console.log(interaction.token);
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setLabel('Connect Wallet')
@@ -26,13 +27,16 @@ module.exports = {
             interaction.user.tag
           )}&id=${encodeURIComponent(
             interaction.user.id
-          )}&token=${encodeURIComponent(ciphertext)}`
+          )}&token=${encodeURIComponent(ciphertext)}&i=${encodeURIComponent(
+            interaction.token
+          )}`
         )
     );
     await interaction.editReply({
       content: 'Click the button below to connect your wallet',
       components: [row],
       ephemeral: true,
+      fetchReply: true,
     });
   },
 };
