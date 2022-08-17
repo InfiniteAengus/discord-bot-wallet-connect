@@ -13,14 +13,22 @@ module.exports = {
     .setName('connect')
     .setDescription('Connect wallet'),
   async execute(interaction) {
-    const ciphertext = CryptoJS.AES.encrypt(interaction.user.tag, process.env.BACKEND_API_TOKEN).toString();
+    const ciphertext = CryptoJS.AES.encrypt(
+      interaction.user.tag,
+      process.env.BACKEND_API_TOKEN
+    ).toString();
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setLabel('Connect Wallet')
         .setStyle(ButtonStyle.Link)
-        .setURL(`${process.env.DAPP_URL}/connect?name=${encodeURIComponent(interaction.user.tag)}&token=${encodeURIComponent(ciphertext)}`),
+        .setURL(
+          `${process.env.DAPP_URL}/connect?name=${encodeURIComponent(
+            interaction.user.tag
+          )}&id=${encodeURIComponent(
+            interaction.user.id
+          )}&token=${encodeURIComponent(ciphertext)}`
+        )
     );
-
     await interaction.editReply({
       content: 'Click the button below to connect your wallet',
       components: [row],

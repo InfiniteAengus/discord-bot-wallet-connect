@@ -41,53 +41,49 @@ client.on('interactionCreate', async (interaction) => {
 
   if (interaction.isButton()) {
     // hunny button
-    if (
-      interaction.customId === 'tip' ||
-      interaction.customId === 'connect' ||
-      interaction.customId === 'balance'
-    ) {
-      const command = client.commands.get(interaction.customId);
-      if (!command) return;
-
-      try {
-        await interaction.deferReply({ ephemeral: true });
-        await command.execute(interaction);
-      } catch (error) {
-        console.log(error);
-        await interaction.editReply({
-          content: 'There was an error while executing this command!',
-          ephemeral: true,
-        });
-      }
-    } else if (
-      // tip feature
-      interaction.customId === 'tip-yes' ||
-      interaction.customId === 'tip-no'
-    ) {
-      // tip-yes
-      if (interaction.customId === 'tip-yes') {
-        interaction.deferReply({ ephemeral: true });
-        const userId = getUserNameFromMessage(interaction.message.content);
-        const user = client.users.cache.find((u) => u.id === userId);
-        const userTag = user.username + '#' + user.discriminator;
-        const amount = getAmountFromMessage(interaction.message.content);
-
-        const senderWallet = await getWalletFromDiscordUser(
-          interaction.user.tag
-        );
-        const receiverWallet = await getWalletFromDiscordUser(userTag);
-        const hashToken = hashCode(
-          `${process.env.HASH_TOKEN}${senderWallet.toLowerCase()}`
-        );
-
-        const requestBody = {
-          sender: senderWallet.toLowerCase(),
-          receiver: receiverWallet.toLowerCase(),
-          amount: amount,
-          token: hashToken,
-        };
+    switch (interaction.customId) {
+      case 'tip':
+        break;
+      case 'connect':
+      case 'balance':
+        // eslint-disable-next-line no-case-declarations
+        const command = client.commands.get(interaction.customId);
+        if (!command) return;
 
         try {
+          await interaction.deferReply({ ephemeral: true });
+          await command.execute(interaction);
+        } catch (error) {
+          console.log(error);
+          await interaction.editReply({
+            content: 'There was an error while executing this command!',
+            ephemeral: true,
+          });
+        }
+        break;
+      case 'tip-yes':
+        try {
+          interaction.deferReply({ ephemeral: true });
+          const userId = getUserNameFromMessage(interaction.message.content);
+          const user = client.users.cache.find((u) => u.id === userId);
+          const userTag = user.username + '#' + user.discriminator;
+          const amount = getAmountFromMessage(interaction.message.content);
+
+          const senderWallet = await getWalletFromDiscordUser(
+            interaction.user.tag
+          );
+          const receiverWallet = await getWalletFromDiscordUser(userTag);
+          const hashToken = hashCode(
+            `${process.env.HASH_TOKEN}${senderWallet.toLowerCase()}`
+          );
+
+          const requestBody = {
+            sender: senderWallet.toLowerCase(),
+            receiver: receiverWallet.toLowerCase(),
+            amount: amount,
+            token: hashToken,
+          };
+
           const res = await fetch(
             `${process.env.BACKEND_API_URL}/tipHunnyDiscord`,
             {
@@ -121,14 +117,15 @@ client.on('interactionCreate', async (interaction) => {
             ephemeral: true,
           });
         }
-      }
-      // tip-no
-      else {
+        break;
+      case 'tip-no':
         await interaction.update({
           content: 'Tip has been cancelled',
           components: [],
         });
-      }
+        break;
+      default:
+        break;
     }
   }
 
