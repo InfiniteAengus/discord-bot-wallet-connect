@@ -30,7 +30,7 @@ module.exports = {
         )
     );
     await interaction.editReply({
-      content: 'Click the button below to connect your wallet',
+      content: 'Link your wallet to start using <:hunny:1009530635150430228> **HUNNY**',
       components: [row],
       ephemeral: true,
     });

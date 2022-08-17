@@ -16,17 +16,17 @@ module.exports = {
     .addNumberOption((amount) =>
       amount.setName('amount').setDescription('amount').setRequired(true),
     )
-    .setDescription('Tip token to users'),
+    .setDescription('Tip HUNNY to users'),
   async execute(interaction) {
     const wallet = await getWalletFromDiscordUser(interaction.user.tag, interaction);
 
     if (!wallet) {
       const embed = new EmbedBuilder()
         .setColor(0xff9900)
-        .setTitle('💎 Please connect your wallet first 💎')
+        .setTitle('🤔 Please link your wallet with **/connect**')
         .setTimestamp()
         .setFooter({
-          text: 'Powered by Bad Bears x BeeFrens',
+          text: 'Powered by HUNNY',
           iconURL:
             'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
         });
@@ -46,10 +46,11 @@ module.exports = {
     if (!receiverWallet) {
       const embed = new EmbedBuilder()
         .setColor(0xff9900)
-        .setTitle('💎 Receiver haven\'t connected wallet yet 💎')
+        .setTitle('🤔 This person has not linked their wallet yet.')
+        .addFields('Tell them to link their wallet with **/connect**')
         .setTimestamp()
         .setFooter({
-          text: 'Powered by Bad Bears x BeeFrens',
+          text: 'Powered by HUNNY',
           iconURL:
             'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
         });
@@ -64,15 +65,16 @@ module.exports = {
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('tip-yes')
-        .setLabel('Yes')
-        .setStyle(ButtonStyle.Primary),
+        .setLabel('Send it')
+        .setEmoji('<:hunny:1009530635150430228>')
+        .setStyle(ButtonStyle.Success),
       new ButtonBuilder()
         .setCustomId('tip-no')
-        .setLabel('No')
-        .setStyle(ButtonStyle.Danger),
+        .setLabel('Cancel')
+        .setStyle(ButtonStyle.Secondary),
     );
     await interaction.editReply({
-      content: `Are you sure to send ${amount} to ${user}?`,
+      content: `Ready to send <:hunny:1009530635150430228> **${amount} HUNNY** to ${user}?`,
       components: [row],
       ephemeral: true
     });
