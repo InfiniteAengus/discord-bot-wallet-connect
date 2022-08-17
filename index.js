@@ -35,7 +35,7 @@ for (const file of commandFiles) {
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
 
-  if (allowedUsers.findIndex((user) => user === interaction.user.tag) === -1) {
+  if (allowedUsers.findIndex((user) => user === interaction.user.id) === -1) {
     return;
   }
 
@@ -104,7 +104,8 @@ client.on('interactionCreate', async (interaction) => {
             });
           } else {
             await interaction.editReply({
-              content: '✅ Successfully sent <:hunny:1009530635150430228> **HUNNY**',
+              content:
+                '✅ Successfully sent <:hunny:1009530635150430228> **HUNNY**',
               components: [],
               ephemeral: true,
             });
@@ -151,11 +152,7 @@ client.on('interactionCreate', async (interaction) => {
 const ably = new Ably.Realtime(process.env.ABLY_API_KEY);
 const channel = ably.channels.get('discord-wallet');
 
-channel.subscribe('wallet', function (message) {
-  const guild = client.guilds.cache.get(process.env.DISCORD_GUILD_ID);
-  const ch = guild.channels.cache.find(
-    (c) => c.id === process.env.DISCORD_CHANNEL_ID
-  );
+channel.subscribe('wallet', async function (message) {
   const parsedData = message.data;
 
   const embed = new EmbedBuilder()
@@ -170,7 +167,17 @@ channel.subscribe('wallet', function (message) {
         'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
     });
 
-  ch.send({ embeds: [embed], ephemeral: true });
+  const hook = await client.fetchWebhook(
+    process.env.DISCORD_CLIENT_ID,
+    parsedData.interactionToken
+  );
+
+  hook.editMessage('@original', {
+    content: '',
+    embeds: [embed],
+    components: [],
+    ephemeral: true,
+  });
 });
 
 client.login(process.env.DISCORD_TOKEN);

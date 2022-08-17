@@ -17,7 +17,6 @@ module.exports = {
       interaction.user.tag,
       process.env.BACKEND_API_TOKEN
     ).toString();
-    console.log(interaction.token);
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setLabel('Connect Wallet')
