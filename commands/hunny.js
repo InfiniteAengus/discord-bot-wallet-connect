@@ -28,7 +28,7 @@ module.exports = {
         .setStyle(ButtonStyle.Primary)
     );
 
-    await interaction.reply({
+    await interaction.editReply({
       content: 'What do you want to do?',
       components: [row],
       ephemeral: true,

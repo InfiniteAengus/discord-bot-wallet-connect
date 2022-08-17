@@ -31,7 +31,7 @@ module.exports = {
             'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
         });
 
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [embed],
         ephemeral: true,
       });
@@ -54,7 +54,7 @@ module.exports = {
             'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
         });
 
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [embed],
         ephemeral: true,
       });
@@ -71,10 +71,10 @@ module.exports = {
         .setLabel('No')
         .setStyle(ButtonStyle.Danger),
     );
-    await interaction.reply({
+    await interaction.editReply({
       content: `Are you sure to send ${amount} to ${user}?`,
       components: [row],
-      ephemeral: true,
+      ephemeral: true
     });
   },
 };

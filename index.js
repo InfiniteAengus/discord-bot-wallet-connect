@@ -51,6 +51,7 @@ client.on('interactionCreate', async (interaction) => {
       if (!command) return;
 
       try {
+        await i.deferReply({ ephemeral: true });
         await command.execute(i);
       } catch (error) {
         console.log(error);
@@ -60,6 +61,8 @@ client.on('interactionCreate', async (interaction) => {
         });
       }
     } else if (i.customId === 'tip-yes') {
+      i.deferReply({ ephemeral: true });
+
       const userId = getUserNameFromMessage(i.message.content);
       const user = client.users.cache.find((u) => u.id === userId);
       const userTag = user.username + '#' + user.discriminator;
@@ -92,9 +95,9 @@ client.on('interactionCreate', async (interaction) => {
 
         const data = await res.json();
         if (data.error) {
-          await i.update({ content: data.error.message, components: [] });
+          await i.editReply({ content: data.error.message, components: [] });
         } else {
-          await i.update({
+          await i.editReply({
             content: 'Successfully transferred',
             components: [],
           });
@@ -116,6 +119,7 @@ client.on('interactionCreate', async (interaction) => {
   if (!command) return;
 
   try {
+    await interaction.deferReply({ ephemeral: true });
     await command.execute(interaction);
   } catch (error) {
     console.log(error);

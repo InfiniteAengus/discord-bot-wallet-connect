@@ -21,7 +21,7 @@ module.exports = {
         .setURL(`${process.env.DAPP_URL}/connect?name=${encodeURIComponent(interaction.user.tag)}&token=${encodeURIComponent(ciphertext)}`),
     );
 
-    await interaction.reply({
+    await interaction.editReply({
       content: 'Click the button below to connect your wallet',
       components: [row],
       ephemeral: true,
