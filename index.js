@@ -56,7 +56,7 @@ client.on('interactionCreate', async (interaction) => {
         } catch (error) {
           console.log(error);
           await interaction.editReply({
-            content: 'There was an error while executing this command!',
+            content: '🤔 There was an error while executing this command',
             ephemeral: true,
           });
         }
@@ -104,7 +104,7 @@ client.on('interactionCreate', async (interaction) => {
             });
           } else {
             await interaction.editReply({
-              content: 'Successfully transferred',
+              content: '✅ Successfully sent <:hunny:1009530635150430228> **HUNNY**',
               components: [],
               ephemeral: true,
             });
@@ -112,7 +112,7 @@ client.on('interactionCreate', async (interaction) => {
         } catch (e) {
           console.log(e);
           await interaction.editReply({
-            content: 'Cannot send hunny',
+            content: '❌ Cannot send <:hunny:1009530635150430228> **HUNNY**',
             components: [],
             ephemeral: true,
           });
@@ -120,7 +120,7 @@ client.on('interactionCreate', async (interaction) => {
         break;
       case 'tip-no':
         await interaction.update({
-          content: 'Tip has been cancelled',
+          content: '❌ Send cancelled',
           components: [],
         });
         break;
@@ -140,7 +140,7 @@ client.on('interactionCreate', async (interaction) => {
     } catch (error) {
       console.log(error);
       await interaction.editReply({
-        content: 'There was an error while executing this command!',
+        content: '🤔 There was an error while executing this command',
         ephemeral: true,
       });
     }
@@ -160,12 +160,12 @@ channel.subscribe('wallet', function (message) {
 
   const embed = new EmbedBuilder()
     .setColor(0x0099ff)
-    .setTitle('✨ Successfully connected wallet')
+    .setTitle('✨ Successfully linked wallet')
     .addFields({ name: 'User', value: `${parsedData.discord}` })
     .addFields({ name: 'Wallet', value: `${parsedData.wallet}` })
     .setTimestamp()
     .setFooter({
-      text: 'Powered by Bad Bears x BeeFrens',
+      text: 'Powered by HUNNY',
       iconURL:
         'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
     });

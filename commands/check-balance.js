@@ -13,10 +13,10 @@ module.exports = {
     if (!wallet) {
       const embed = new EmbedBuilder()
         .setColor(0xff9900)
-        .setTitle('Please connect your wallet first')
+        .setTitle('Please link your wallet first')
         .setTimestamp()
         .setFooter({
-          text: 'Powered by Bad Bears x BeeFrens',
+          text: 'Powered by HUNNY',
           iconURL:
             'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
         });
@@ -45,7 +45,7 @@ module.exports = {
       .addFields({ name: 'Balance', value: `You have **${data[0].hunnyBalance}** HUNNY available` })
       .setTimestamp()
       .setFooter({
-        text: 'Powered by Bad Bears x BeeFrens',
+        text: 'Powered by HUNNY',
         iconURL:
           'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
       });
