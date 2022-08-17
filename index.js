@@ -39,99 +39,114 @@ client.on('interactionCreate', async (interaction) => {
     return;
   }
 
-  const collector = interaction.channel.createMessageComponentCollector();
-
-  collector.on('collect', async (i) => {
+  if (interaction.isButton()) {
+    // hunny button
     if (
-      i.customId === 'tip' ||
-      i.customId === 'connect' ||
-      i.customId === 'balance'
+      interaction.customId === 'tip' ||
+      interaction.customId === 'connect' ||
+      interaction.customId === 'balance'
     ) {
-      const command = client.commands.get(i.customId);
+      const command = client.commands.get(interaction.customId);
       if (!command) return;
 
       try {
-        await i.deferReply({ ephemeral: true });
-        await command.execute(i);
+        await interaction.deferReply({ ephemeral: true });
+        await command.execute(interaction);
       } catch (error) {
         console.log(error);
-        await i.reply({
+        await interaction.editReply({
           content: 'There was an error while executing this command!',
           ephemeral: true,
         });
       }
-    } else if (i.customId === 'tip-yes') {
-      await i.deferReply({ ephemeral: true });
+    } else if (
+      // tip feature
+      interaction.customId === 'tip-yes' ||
+      interaction.customId === 'tip-no'
+    ) {
+      // tip-yes
+      if (interaction.customId === 'tip-yes') {
+        interaction.deferReply({ ephemeral: true });
+        const userId = getUserNameFromMessage(interaction.message.content);
+        const user = client.users.cache.find((u) => u.id === userId);
+        const userTag = user.username + '#' + user.discriminator;
+        const amount = getAmountFromMessage(interaction.message.content);
 
-      const userId = getUserNameFromMessage(i.message.content);
-      const user = client.users.cache.find((u) => u.id === userId);
-      const userTag = user.username + '#' + user.discriminator;
-      const amount = getAmountFromMessage(i.message.content);
-
-      const senderWallet = await getWalletFromDiscordUser(interaction.user.tag);
-      const receiverWallet = await getWalletFromDiscordUser(userTag);
-      const hashToken = hashCode(
-        `${process.env.HASH_TOKEN}${senderWallet.toLowerCase()}`
-      );
-
-      const requestBody = {
-        sender: senderWallet.toLowerCase(),
-        receiver: receiverWallet.toLowerCase(),
-        amount: amount,
-        token: hashToken,
-      };
-
-      try {
-        const res = await fetch(
-          `${process.env.BACKEND_API_URL}/tipHunnyDiscord`,
-          {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
+        const senderWallet = await getWalletFromDiscordUser(
+          interaction.user.tag
+        );
+        const receiverWallet = await getWalletFromDiscordUser(userTag);
+        const hashToken = hashCode(
+          `${process.env.HASH_TOKEN}${senderWallet.toLowerCase()}`
         );
 
-        const data = await res.json();
-        if (data.error) {
-          await i.editReply({
-            content: data.error.message,
-            components: [],
-            ephemeral: true,
-          });
-        } else {
-          await i.editReply({
-            content: 'Successfully transferred',
+        const requestBody = {
+          sender: senderWallet.toLowerCase(),
+          receiver: receiverWallet.toLowerCase(),
+          amount: amount,
+          token: hashToken,
+        };
+
+        try {
+          const res = await fetch(
+            `${process.env.BACKEND_API_URL}/tipHunnyDiscord`,
+            {
+              method: 'POST',
+              body: JSON.stringify(requestBody),
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          const data = await res.json();
+          if (data.error) {
+            await interaction.editReply({
+              content: data.error.message,
+              components: [],
+              ephemeral: true,
+            });
+          } else {
+            await interaction.editReply({
+              content: 'Successfully transferred',
+              components: [],
+              ephemeral: true,
+            });
+          }
+        } catch (e) {
+          console.log(e);
+          await interaction.editReply({
+            content: 'Cannot send hunny',
             components: [],
             ephemeral: true,
           });
         }
-      } catch (e) {
-        console.log(e);
-        await i.update({ content: 'Cannot send hunny', components: [] });
       }
-
-      //  const user = i.message.interaction.options.getUser('user');
-      //  console.log(user);
-    } else if (i.customId === 'tip-no') {
-      await i.update({ content: 'Tip has been cancelled', components: [] });
+      // tip-no
+      else {
+        await interaction.update({
+          content: 'Tip has been cancelled',
+          components: [],
+        });
+      }
     }
-  });
+  }
 
-  const command = client.commands.get(interaction.commandName);
+  if (interaction.isChatInputCommand()) {
+    const command = client.commands.get(interaction.commandName);
 
-  if (!command) return;
+    if (!command) return;
 
-  try {
-    await interaction.deferReply({ ephemeral: true });
-    await command.execute(interaction);
-  } catch (error) {
-    console.log(error);
-    await interaction.reply({
-      content: 'There was an error while executing this command!',
-      ephemeral: true,
-    });
+    try {
+      await interaction.deferReply({ ephemeral: true });
+      await command.execute(interaction);
+    } catch (error) {
+      console.log(error);
+      await interaction.editReply({
+        content: 'There was an error while executing this command!',
+        ephemeral: true,
+      });
+    }
   }
 });
 
