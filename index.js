@@ -106,7 +106,7 @@ client.on('interactionCreate', async (interaction) => {
             });
           } else {
             interaction.channel.send({
-              content: `✅ Successfully sent <:hunny:1009530635150430228> **${amount} HUNNY** from <@${interaction.user.id}> to <@${userId}>`,
+              content: `<@${interaction.user.id}> sent **${amount} <:hunny:1009530635150430228> HUNNY** to <@${userId}>`,
               components: [],
             });
             await interaction.deleteReply();
