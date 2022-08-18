@@ -13,7 +13,7 @@ module.exports = {
     .addUserOption((user) =>
       user.setName('user').setDescription('@user').setRequired(true)
     )
-    .addNumberOption((amount) =>
+    .addIntegerOption((amount) =>
       amount.setName('amount').setDescription('amount').setRequired(true)
     )
     .setDescription('Tip HUNNY to users'),
@@ -42,7 +42,7 @@ module.exports = {
     }
 
     const user = interaction.options.getUser('user');
-    const amount = interaction.options.getNumber('amount');
+    const amount = interaction.options.getInteger('amount');
 
     const receiverWallet = await getWalletFromDiscordUser(
       user.username + '#' + user.discriminator
@@ -67,7 +67,7 @@ module.exports = {
       return;
     }
 
-    if (amount < 0) {
+    if (amount <= 0) {
       const embed = new EmbedBuilder()
         .setColor(0xff9900)
         .setTitle('🤔 The amount must be greater than 0.')

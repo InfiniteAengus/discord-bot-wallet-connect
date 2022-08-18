@@ -65,7 +65,8 @@ client.on('interactionCreate', async (interaction) => {
         break;
       case 'tip-yes':
         try {
-          interaction.deferReply();
+          await interaction.deferReply({ ephemeral: true });
+
           const userId = getUserNameFromMessage(interaction.message.content);
           const user = client.users.cache.find((u) => u.id === userId);
           const userTag = user.username + '#' + user.discriminator;
@@ -105,11 +106,11 @@ client.on('interactionCreate', async (interaction) => {
               ephemeral: true,
             });
           } else {
-            interaction.channel.send({
+            await interaction.editReply({ content: 'thinking...' });
+            await interaction.channel.send({
               content: `<@${interaction.user.id}> sent **${amount} <:hunny:1009530635150430228> HUNNY** to <@${userId}>`,
               components: [],
             });
-            await interaction.deleteReply();
           }
         } catch (e) {
           console.log(e);
