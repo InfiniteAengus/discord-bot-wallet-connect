@@ -35,7 +35,9 @@ for (const file of commandFiles) {
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
 
-  if (allowedUsers.findIndex((user) => user.id === interaction.user.id) === -1) {
+  if (
+    allowedUsers.findIndex((user) => user.id === interaction.user.id) === -1
+  ) {
     return;
   }
 
@@ -63,7 +65,7 @@ client.on('interactionCreate', async (interaction) => {
         break;
       case 'tip-yes':
         try {
-          interaction.deferReply({ ephemeral: true });
+          interaction.deferReply();
           const userId = getUserNameFromMessage(interaction.message.content);
           const user = client.users.cache.find((u) => u.id === userId);
           const userTag = user.username + '#' + user.discriminator;
@@ -103,12 +105,12 @@ client.on('interactionCreate', async (interaction) => {
               ephemeral: true,
             });
           } else {
-            await interaction.editReply({
+            interaction.channel.send({
               content:
-                '✅ Successfully sent <:hunny:1009530635150430228> **HUNNY**',
+                `✅ Successfully sent <:hunny:1009530635150430228> **${amount} HUNNY** from <@${interaction.user.id}> to <@${userId}>`,
               components: [],
-              ephemeral: true,
             });
+            await interaction.deleteReply();
           }
         } catch (e) {
           console.log(e);
@@ -154,6 +156,16 @@ const channel = ably.channels.get('discord-wallet');
 
 channel.subscribe('wallet', async function (message) {
   const parsedData = message.data;
+  const guild = client.guilds.cache.get(process.env.DISCORD_GUILD_ID);
+  const role = guild.roles.cache.get('1009562726504345720');
+
+  const member =
+    guild.members.cache.get(parsedData.discordID) ||
+    (await guild.members.fetch(parsedData.discordID).catch((error) => {
+      console.log(error);
+    }));
+
+  await member.roles.add(role);
 
   const embed = new EmbedBuilder()
     .setColor(0x0099ff)
