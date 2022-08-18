@@ -5,8 +5,7 @@ const {
   ButtonStyle,
 } = require('discord.js');
 const CryptoJS = require('crypto-js');
-require('dotenv').config({ debug: process.env.DEBUG });
-// const Web3 = require('web3');
+require('dotenv').config();
 
 module.exports = {
   data: new SlashCommandBuilder()

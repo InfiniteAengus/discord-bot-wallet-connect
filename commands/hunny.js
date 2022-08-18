@@ -4,15 +4,13 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require('discord.js');
-require('dotenv').config({ debug: process.env.DEBUG });
-// const Web3 = require('web3');
+require('dotenv').config();
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('hunny')
     .setDescription('Hunny Balance'),
   async execute(interaction) {
-
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('tip')

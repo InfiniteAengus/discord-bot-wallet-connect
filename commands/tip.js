@@ -5,7 +5,7 @@ const {
   ButtonStyle,
   EmbedBuilder,
 } = require('discord.js');
-const { getWalletFromDiscordUser } = require('../helper');
+const { getWalletFromDiscordUser } = require('../utils/helper');
 
 module.exports = {
   data: new SlashCommandBuilder()

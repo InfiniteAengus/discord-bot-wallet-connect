@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
-const { getWalletFromDiscordUser } = require('../helper');
-require('dotenv').config({ debug: process.env.DEBUG });
+const { getWalletFromDiscordUser } = require('../utils/helper');
+require('dotenv').config();
 
 module.exports = {
   data: new SlashCommandBuilder()
