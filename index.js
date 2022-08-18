@@ -106,8 +106,7 @@ client.on('interactionCreate', async (interaction) => {
             });
           } else {
             interaction.channel.send({
-              content:
-                `✅ Successfully sent <:hunny:1009530635150430228> **${amount} HUNNY** from <@${interaction.user.id}> to <@${userId}>`,
+              content: `✅ Successfully sent <:hunny:1009530635150430228> **${amount} HUNNY** from <@${interaction.user.id}> to <@${userId}>`,
               components: [],
             });
             await interaction.deleteReply();
@@ -122,10 +121,14 @@ client.on('interactionCreate', async (interaction) => {
         }
         break;
       case 'tip-no':
-        await interaction.update({
-          content: '❌ Send cancelled',
-          components: [],
-        });
+        try {
+          await interaction.update({
+            content: '❌ Send cancelled',
+            components: [],
+          });
+        } catch {
+          console.log('error');
+        }
         break;
       default:
         break;
@@ -155,41 +158,45 @@ const ably = new Ably.Realtime(process.env.ABLY_API_KEY);
 const channel = ably.channels.get('discord-wallet');
 
 channel.subscribe('wallet', async function (message) {
-  const parsedData = message.data;
-  const guild = client.guilds.cache.get(process.env.DISCORD_GUILD_ID);
-  const role = guild.roles.cache.get('1009562726504345720');
+  try {
+    const parsedData = message.data;
+    const guild = client.guilds.cache.get(process.env.DISCORD_GUILD_ID);
+    const role = guild.roles.cache.get('1009562726504345720');
 
-  const member =
-    guild.members.cache.get(parsedData.discordID) ||
-    (await guild.members.fetch(parsedData.discordID).catch((error) => {
-      console.log(error);
-    }));
+    const member =
+      guild.members.cache.get(parsedData.discordID) ||
+      (await guild.members.fetch(parsedData.discordID).catch((error) => {
+        console.log(error);
+      }));
 
-  await member.roles.add(role);
+    await member.roles.add(role);
 
-  const embed = new EmbedBuilder()
-    .setColor(0x0099ff)
-    .setTitle('✨ Successfully linked wallet')
-    .addFields({ name: 'User', value: `${parsedData.discord}` })
-    .addFields({ name: 'Wallet', value: `${parsedData.wallet}` })
-    .setTimestamp()
-    .setFooter({
-      text: 'Powered by HUNNY',
-      iconURL:
-        'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
+    const embed = new EmbedBuilder()
+      .setColor(0x0099ff)
+      .setTitle('✨ Successfully linked wallet')
+      .addFields({ name: 'User', value: `${parsedData.discord}` })
+      .addFields({ name: 'Wallet', value: `${parsedData.wallet}` })
+      .setTimestamp()
+      .setFooter({
+        text: 'Powered by HUNNY',
+        iconURL:
+          'https://cdn.discordapp.com/icons/892863900352135248/a_47c3f1bc9ea8f18aa868723401f3c954.webp',
+      });
+
+    const hook = await client.fetchWebhook(
+      process.env.DISCORD_CLIENT_ID,
+      parsedData.interactionToken
+    );
+
+    hook.editMessage('@original', {
+      content: '',
+      embeds: [embed],
+      components: [],
+      ephemeral: true,
     });
-
-  const hook = await client.fetchWebhook(
-    process.env.DISCORD_CLIENT_ID,
-    parsedData.interactionToken
-  );
-
-  hook.editMessage('@original', {
-    content: '',
-    embeds: [embed],
-    components: [],
-    ephemeral: true,
-  });
+  } catch {
+    console.log('error');
+  }
 });
 
 client.login(process.env.DISCORD_TOKEN);
