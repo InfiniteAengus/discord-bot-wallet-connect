@@ -5,7 +5,11 @@ const {
   ButtonStyle,
   EmbedBuilder,
 } = require('discord.js');
-const { getWalletFromDiscordUser } = require('../utils/helper');
+const fetch = require('node-fetch');
+const {
+  getWalletFromDiscordUser,
+  hashCode,
+} = require('../utils/helper');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,7 +21,11 @@ module.exports = {
       amount.setName('amount').setDescription('amount').setRequired(true)
     )
     .setDescription('Tip HUNNY to users'),
-  async execute(interaction) {
+
+  async execute(client, interaction) {
+    await interaction.deferReply({ ephemeral: true });
+
+    // Get Wallet of author
     const wallet = await getWalletFromDiscordUser(
       interaction.user.tag,
       interaction
@@ -41,9 +49,11 @@ module.exports = {
       return;
     }
 
+    // Get command argument values
     const user = interaction.options.getUser('user');
     const amount = interaction.options.getInteger('amount');
 
+    // Get Receiver wallet address
     const receiverWallet = await getWalletFromDiscordUser(
       user.username + '#' + user.discriminator
     );
@@ -67,6 +77,7 @@ module.exports = {
       return;
     }
 
+    // Noti if amount is not positive
     if (amount <= 0) {
       const embed = new EmbedBuilder()
         .setColor(0xff9900)
@@ -96,10 +107,81 @@ module.exports = {
         .setLabel('Cancel')
         .setStyle(ButtonStyle.Secondary)
     );
-    await interaction.editReply({
+
+    interaction.editReply({
       content: `Ready to send <:hunny:1009530635150430228> **${amount} HUNNY** to ${user}?`,
       components: [row],
       ephemeral: true,
+    }).then((m) => {
+      const collector = m.createMessageComponentCollector();
+
+      collector.on('collect', async (i) => {
+        if (!i.isButton()) return;
+
+        switch (i.customId) {
+          case 'tip-yes':
+            try {
+              await i.deferUpdate({ ephemeral: true });
+
+              const hashToken = hashCode(
+                `${process.env.HASH_TOKEN}${wallet.toLowerCase()}`
+              );
+
+              const requestBody = {
+                sender: wallet.toLowerCase(),
+                receiver: receiverWallet.toLowerCase(),
+                amount: amount,
+                token: hashToken,
+              };
+
+              const res = await fetch(
+                `${process.env.BACKEND_API_URL}/tipHunnyDiscord`,
+                {
+                  method: 'POST',
+                  body: JSON.stringify(requestBody),
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
+
+              const data = await res.json();
+              if (data.error) {
+                await i.editReply({
+                  content: data.error.message,
+                  components: [],
+                  ephemeral: true,
+                });
+              } else {
+                await i.editReply({ content: 'Sent <:hunny:1009530635150430228> **HUNNY**', components: [] });
+                await i.channel.send({
+                  content: `<@${i.user.id}> sent **${amount} <:hunny:1009530635150430228> HUNNY** to ${user}`,
+                  components: [],
+                });
+              }
+            } catch (e) {
+              console.log(e);
+              await i.editReply({
+                content: '❌ Cannot send <:hunny:1009530635150430228> **HUNNY**',
+                components: [],
+                ephemeral: true,
+              });
+            }
+            break;
+          case 'tip-no':
+            try {
+              await i.update({
+                content: '❌ Send cancelled',
+                components: [],
+              });
+            } catch {
+              console.log('error');
+            }
+            break;
+          default:
+            break;
+        }
+      });
     });
   },
 };

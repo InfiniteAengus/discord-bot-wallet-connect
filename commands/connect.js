@@ -11,11 +11,12 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('connect')
     .setDescription('Connect wallet'),
-  async execute(interaction) {
+  async execute(client, interaction) {
     const ciphertext = CryptoJS.AES.encrypt(
       interaction.user.tag,
       process.env.BACKEND_API_TOKEN
     ).toString();
+
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setLabel('Connect Wallet')
@@ -30,8 +31,10 @@ module.exports = {
           )}`
         )
     );
-    await interaction.editReply({
-      content: 'Link your wallet to start using <:hunny:1009530635150430228> **HUNNY**',
+
+    await interaction.reply({
+      content:
+        'Link your wallet to start using <:hunny:1009530635150430228> **HUNNY**',
       components: [row],
       ephemeral: true,
       fetchReply: true,
