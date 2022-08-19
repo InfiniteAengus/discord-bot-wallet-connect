@@ -15,22 +15,6 @@ module.exports = {
     return wallet[0].wallet;
   },
 
-  getUserNameFromMessage(message) {
-    let i = message.length - 1;
-    for (; i >= 0; i--) {
-      if (message[i] === '<') break;
-    }
-
-    return message.slice(i + 2, message.length - 2);
-  },
-
-  getAmountFromMessage(message) {
-    const start = message.indexOf('**');
-    let i;
-    for (i = start; message[i] !== ' '; i++);
-    return Number(message.slice(start + 2, i));
-  },
-
   hashCode(str) {
     let hash = 0,
       i,
