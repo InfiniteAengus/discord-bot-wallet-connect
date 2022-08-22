@@ -13,7 +13,7 @@ module.exports = {
     .setDescription('Connect wallet'),
   async execute(client, interaction) {
     const ciphertext = CryptoJS.AES.encrypt(
-      interaction.user.tag,
+      interaction.user.id,
       process.env.BACKEND_API_TOKEN
     ).toString();
 
